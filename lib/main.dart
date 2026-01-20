@@ -11,14 +11,15 @@ class TaskEaseApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(useMaterial3: true, colorSchemeSeed: Colors.blue),
+      theme: ThemeData(
+        useMaterial3: true,
+        colorSchemeSeed: Colors.deepPurple, // Modern purple theme
+      ),
       home: const TodoScreen(),
     );
   }
 }
 
-// 1. STATEFUL WIDGET: Manages the 'List' state.
-// In your video, explain that this holds the "Source of Truth."
 class TodoScreen extends StatefulWidget {
   const TodoScreen({super.key});
 
@@ -27,7 +28,7 @@ class TodoScreen extends StatefulWidget {
 }
 
 class _TodoScreenState extends State<TodoScreen> {
-  final List<String> _tasks = ["Buy groceries", "Fix iOS lag issue", "Record demo"];
+  final List<String> _tasks = ["Finish Flutter Project", "Record Video Demo", "Submit Assignment"];
   final TextEditingController _controller = TextEditingController();
 
   void _addTask() {
@@ -42,32 +43,63 @@ class _TodoScreenState extends State<TodoScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("TaskEase Optimized")),
+      appBar: AppBar(
+        centerTitle: true,
+        // ✨ STYLISH TITLE WITH BACKGROUND
+        title: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          decoration: BoxDecoration(
+            color: Colors.deepPurple.shade100,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: const Text(
+            "TaskEase Optimized",
+            style: TextStyle(
+              color: Colors.deepPurple,
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+            ),
+          ),
+        ),
+      ),
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(20.0),
             child: Row(
               children: [
                 Expanded(
                   child: TextField(
                     controller: _controller,
-                    decoration: const InputDecoration(hintText: "Enter task..."),
+                    decoration: InputDecoration(
+                      hintText: "What needs to be done?",
+                      filled: true,
+                      fillColor: Colors.grey.shade100,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
                   ),
                 ),
-                IconButton(icon: const Icon(Icons.add), onPressed: _addTask),
+                const SizedBox(width: 10),
+                FloatingActionButton(
+                  mini: true,
+                  onPressed: _addTask,
+                  child: const Icon(Icons.add),
+                ),
               ],
             ),
           ),
-          // 2. PERFORMANCE WIN: Use ListView.builder for O(n) rendering.
-          // Explain in README: It only builds what is visible on screen.
           Expanded(
             child: ListView.builder(
               itemCount: _tasks.length,
+              padding: const EdgeInsets.only(bottom: 20),
               itemBuilder: (context, index) {
                 return TaskItemTile(
                   taskName: _tasks[index],
                   onDelete: () {
+                    // TARGETED UPDATE
                     setState(() => _tasks.removeAt(index));
                   },
                 );
@@ -80,26 +112,32 @@ class _TodoScreenState extends State<TodoScreen> {
   }
 }
 
-// 3. STATELESS WIDGET: Individual rows should be stateless for speed.
-// They receive data from the parent and don't need their own heavy 'State' object.
 class TaskItemTile extends StatelessWidget {
   final String taskName;
   final VoidCallback onDelete;
 
-  const TaskItemTile({
-    super.key,
-    required this.taskName,
-    required this.onDelete,
-  });
+  const TaskItemTile({super.key, required this.taskName, required this.onDelete});
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(15),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
       child: ListTile(
-        title: Text(taskName),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+        title: Text(taskName, style: const TextStyle(fontWeight: FontWeight.w500)),
         trailing: IconButton(
-          icon: const Icon(Icons.delete, color: Colors.red),
+          icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
           onPressed: onDelete,
         ),
       ),
