@@ -1,26 +1,25 @@
 import 'package:flutter/material.dart';
-import 'screens/welcome_screen.dart'; // Import your new screen here
+import 'screens/welcome_screen.dart'; 
+// You don't need to import responsive_home here anymore 
+// because main.dart only needs to see the first page.
 
 void main() {
-  runApp(const TaskManager
-  ());
+  runApp(const TaskManager());
 }
 
-class TaskManager
- extends StatelessWidget {
-  const TaskManager
-  ({super.key});
+class TaskManager extends StatelessWidget {
+  const TaskManager({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'TaskManager',
+      title: 'TaskEase Manager',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.blue,
-        useMaterial3: true, // Modern Android/iOS look
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
+        useMaterial3: true,
       ),
-      // This tells Flutter to show the WelcomeScreen first
+      // 👇 THIS IS THE FIX: Set the home to WelcomeScreen
       home: const WelcomeScreen(), 
     );
   }

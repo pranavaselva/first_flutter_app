@@ -83,5 +83,17 @@ A secure tracking application interface built with Flutter to demonstrate basic 
 ## Reflection
 By using a modular structure, I learned how to separate "What the app looks like" (UI) from "How the app behaves" (Logic). This is crucial for scaling the project when we integrate the Rust backend later.
 
+# TaskEase - Responsive Task Manager
+
+## 📱 Responsive Implementation
+I used **MediaQuery** to detect screen dimensions.
+- **Mobile View:** Uses a `ListView` for a narrow, scrollable experience.
+- **Tablet/Web View:** Uses a `GridView` (2 columns) to maximize space.
+
+```dart
+double screenWidth = MediaQuery.of(context).size.width;
+bool isTablet = screenWidth > 600;
+// Switch between layouts based on isTablet
+
 ## Demo
 ![App Screenshot](path/to/your/screenshot.png)

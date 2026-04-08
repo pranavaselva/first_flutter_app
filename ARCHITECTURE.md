@@ -1,19 +1,17 @@
-# TaskEase System Architecture
+# TaskEase Architecture Overview
 
-## A. System Overview
-- **Frontend:** Flutter (Web/Android/iOS)
-- **Backend/Database:** Firebase Firestore (NoSQL)
-- **Authentication:** Firebase Auth (Email/Password)
-- **State Management:** Localized StatefulWidget logic (setState)
+## 1. System Components
+- **Frontend Layer:** Flutter Web using a Modular Folder Structure.
+- **State Management:** Local state handling using `setState()` for high-performance UI updates.
+- **Responsiveness:** Implemented via `MediaQuery` and `LayoutBuilder`.
 
-## B. Data Flow Diagram
-[Insert Image or Mermaid Link Here]
-User Input -> Flutter Service -> Firebase Auth -> Firestore Database -> Real-time UI Update
+## 2. Directory Strategy
+- `lib/screens/`: Separates the Onboarding (Welcome) from the Core UI (Dashboard).
+- `lib/widgets/`: (Future use) for reusable Task Cards.
 
-## C. Firebase Integration
-1. **Auth:** Handles user signup/login for task privacy.
-2. **Firestore:** Stores 'Tasks' collection (fields: title, description, dueDate, isCompleted).
+## 3. Data Flow
+1. **User Interaction:** User clicks "Finish Task" on Welcome Screen.
+2. **State Update:** `setState()` triggers a targeted rebuild of the counter.
+3. **Navigation:** `Navigator.push` moves the user from `WelcomeScreen` to `ResponsiveHome`.
 
-## D. Maintenance
-- To run: `flutter run -d chrome`
-- Configuration: Requires `firebase_options.dart` generated via FlutterFire CLI.
+4. **Adaptive Layout:** `ResponsiveHome` checks device width and chooses between `ListView` or `GridView`.
