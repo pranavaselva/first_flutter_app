@@ -85,10 +85,16 @@ By using a modular structure, I learned how to separate "What the app looks like
 
 # TaskEase - Responsive Task Manager
 
-## 📱 Responsive Implementation
-I used **MediaQuery** to detect screen dimensions.
-- **Mobile View:** Uses a `ListView` for a narrow, scrollable experience.
-- **Tablet/Web View:** Uses a `GridView` (2 columns) to maximize space.
+📐 Responsiveness Strategy
+My approach to adaptive design relied on the Breakpoint Pattern:
+
+Detection: I used MediaQuery.of(context).size.width as the source of truth for the viewport size.
+
+The Threshold: A breakpoint of 600px was set.
+
+Why? This is the standard transition point between large mobile devices and small tablets.
+
+Adaptive Widget Tree: Instead of just resizing elements, I used a LayoutBuilder to swap out the entire layout structure (List vs. Grid). This ensures that a student on a laptop sees a high-information-density view, while a mobile user gets a clean, touch-friendly list.
 
 ```dart
 double screenWidth = MediaQuery.of(context).size.width;
