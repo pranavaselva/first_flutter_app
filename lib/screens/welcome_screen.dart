@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'responsive_home.dart'; // Import the dashboard
+import 'stateless_stateful_demo.dart'; // Import the demo
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
@@ -32,38 +33,76 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.check_circle_outline, size: 80, color: Colors.white),
+            const Icon(
+              Icons.check_circle_outline,
+              size: 80,
+              color: Colors.white,
+            ),
             const SizedBox(height: 20),
-            const Text("TaskEase Manager", 
-              style: TextStyle(color: Colors.white, fontSize: 32, fontWeight: FontWeight.bold)),
+            const Text(
+              "TaskEase Manager",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 32,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             const SizedBox(height: 40),
-            
+
             // The "State Change" Area for your screenshot
             Container(
               padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(color: Colors.white10, borderRadius: BorderRadius.circular(15)),
+              decoration: BoxDecoration(
+                color: Colors.white10,
+                borderRadius: BorderRadius.circular(15),
+              ),
               child: Column(
                 children: [
-                  Text("Tasks Finished Today: $_tasksCompleted", 
-                    style: const TextStyle(color: Colors.white, fontSize: 18)),
+                  Text(
+                    "Tasks Finished Today: $_tasksCompleted",
+                    style: const TextStyle(color: Colors.white, fontSize: 18),
+                  ),
                   ElevatedButton(
-                    onPressed: _finishTask, 
-                    child: const Text("Finish a Task")),
+                    onPressed: _finishTask,
+                    child: const Text("Finish a Task"),
+                  ),
                 ],
               ),
             ),
-            
+
             const SizedBox(height: 50),
             // Navigation to Dashboard
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const ResponsiveHome()),
+                  MaterialPageRoute(
+                    builder: (context) => const ResponsiveHome(),
+                  ),
                 );
               },
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.white, foregroundColor: Colors.indigo),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: Colors.indigo,
+              ),
               child: const Text("Go to Dashboard →"),
+            ),
+            const SizedBox(height: 20),
+            // Navigation to Stateless/Stateful Demo
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const StatelessStatefulDemo(),
+                  ),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: Colors.indigo,
+              ),
+              child: const Text("View Widget Demo →"),
             ),
           ],
         ),
