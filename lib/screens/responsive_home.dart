@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class ResponsiveHome extends StatelessWidget {
+class ResponsiveHome extends StatefulWidget {
   const ResponsiveHome({super.key});
 
+  @override
+  State<ResponsiveHome> createState() => _ResponsiveHomeState();
+}
+
+class _ResponsiveHomeState extends State<ResponsiveHome> {
   // --- 1. THE TASK STATUS & ADD LOGIC ---
-  
+
   // Function to Add Task (CREATE)
   void _addNewTask(BuildContext context) {
     final TextEditingController controller = TextEditingController();
@@ -18,7 +23,10 @@ class ResponsiveHome extends StatelessWidget {
           decoration: const InputDecoration(hintText: "Enter task title..."),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text("Cancel")),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Cancel"),
+          ),
           ElevatedButton(
             onPressed: () {
               if (controller.text.isNotEmpty) {
@@ -33,6 +41,68 @@ class ResponsiveHome extends StatelessWidget {
               }
             },
             child: const Text("Save"),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Function to Edit Task
+  void _editTask(BuildContext context, String docId, String currentTitle) {
+    final TextEditingController controller = TextEditingController(
+      text: currentTitle,
+    );
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Edit Task"),
+        content: TextField(
+          controller: controller,
+          decoration: const InputDecoration(hintText: "Enter task title..."),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Cancel"),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              if (controller.text.isNotEmpty) {
+                FirebaseFirestore.instance
+                    .collection('tasks')
+                    .doc(docId)
+                    .update({'title': controller.text});
+                Navigator.pop(context);
+              }
+            },
+            child: const Text("Update"),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Function to Delete Task
+  void _deleteTask(BuildContext context, String docId) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Delete Task"),
+        content: const Text("Are you sure you want to delete this task?"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Cancel"),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              FirebaseFirestore.instance
+                  .collection('tasks')
+                  .doc(docId)
+                  .delete();
+              Navigator.pop(context);
+            },
+            child: const Text("Delete"),
           ),
         ],
       ),
@@ -64,9 +134,13 @@ class ResponsiveHome extends StatelessWidget {
         child: const Icon(Icons.add, color: Colors.white),
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection('tasks').orderBy('createdAt', descending: true).snapshots(),
+        stream: FirebaseFirestore.instance
+            .collection('tasks')
+            .orderBy('createdAt', descending: true)
+            .snapshots(),
         builder: (context, snapshot) {
-          if (snapshot.hasError) return const Center(child: Text("Connection Error"));
+          if (snapshot.hasError)
+            return const Center(child: Text("Connection Error"));
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
@@ -114,10 +188,25 @@ class ResponsiveHome extends StatelessWidget {
             ),
             title: Text(
               task['title'] ?? 'New Task',
-              style: TextStyle(decoration: isDone ? TextDecoration.lineThrough : null),
+              style: TextStyle(
+                decoration: isDone ? TextDecoration.lineThrough : null,
+              ),
             ),
             subtitle: Text("Due: ${task['dueDate'] ?? 'No date set'}"),
-            trailing: const Icon(Icons.edit_note),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.edit),
+                  onPressed: () =>
+                      _editTask(context, docId, task['title'] ?? ''),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.delete),
+                  onPressed: () => _deleteTask(context, docId),
+                ),
+              ],
+            ),
           ),
         );
       },
@@ -140,19 +229,38 @@ class ResponsiveHome extends StatelessWidget {
         final bool isDone = task['isCompleted'] ?? false;
 
         return Card(
-          color: isDone ? Colors.green.withOpacity(0.1) : Colors.deepPurple.withOpacity(0.05),
+          color: isDone
+              ? Colors.green.withOpacity(0.1)
+              : Colors.deepPurple.withOpacity(0.05),
           child: Center(
             child: ListTile(
-              onTap: () => _toggleTaskStatus(docId, isDone), // STATUS UPDATE HERE
+              onTap: () =>
+                  _toggleTaskStatus(docId, isDone), // STATUS UPDATE HERE
               leading: Icon(
                 isDone ? Icons.check_circle : Icons.assignment,
                 color: isDone ? Colors.green : Colors.deepPurple,
               ),
               title: Text(
                 task['title'] ?? 'New Task',
-                style: TextStyle(decoration: isDone ? TextDecoration.lineThrough : null),
+                style: TextStyle(
+                  decoration: isDone ? TextDecoration.lineThrough : null,
+                ),
               ),
               subtitle: Text("Priority: ${task['priority'] ?? 'Normal'}"),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.edit),
+                    onPressed: () =>
+                        _editTask(context, docId, task['title'] ?? ''),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.delete),
+                    onPressed: () => _deleteTask(context, docId),
+                  ),
+                ],
+              ),
             ),
           ),
         );
