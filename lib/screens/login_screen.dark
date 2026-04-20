@@ -1,0 +1,48 @@
+import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'responsive_home.dart';
+
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+
+  Future<void> _signIn() async {
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+      if (mounted) {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const ResponsiveHome()));
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Error: ${e.toString()}")));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text("TaskEase Login", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+            TextField(controller: _emailController, decoration: const InputDecoration(labelText: "Email")),
+            TextField(controller: _passwordController, decoration: const InputDecoration(labelText: "Password"), obscureText: true),
+            const SizedBox(height: 20),
+            ElevatedButton(onPressed: _signIn, child: const Text("Login")),
+          ],
+        ),
+      ),
+    );
+  }
+}
