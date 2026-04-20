@@ -132,4 +132,12 @@ Dialog Structures:
 Widget Tree: It helps Flutter know exactly where every element sits so it can organize complex layouts easily.
 
 Reactive Model: It's efficient because instead of you "telling" the screen to change, you just change the data (setState), and Flutter intelligently repaints the screen for you.
+
+## 5. Stateless vs Stateful Widget Usage Guidelines
+
+When to use Stateless: Use it for everything that doesn't change after the app starts (titles, icons, background colors). It's faster and saves memory.
+
+When to use Stateful: Only when the user interacts with it or data comes in from the internet that needs to change the screen.
+
+Performance: Flutter is smart; it knows to only "repaint" the Stateful widget while leaving the Stateless one alone.
 ```
