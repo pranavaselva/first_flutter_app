@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart'; // This file is generated when you run 'flutterfire configure'
 import 'screens/welcome_screen.dart'; 
-// You don't need to import responsive_home here anymore 
-// because main.dart only needs to see the first page.
 
-void main() {
+void main() async {
+  // 1. Ensure Flutter is ready
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  // 2. Connect to Firebase
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  
   runApp(const TaskManager());
 }
 
@@ -19,7 +27,6 @@ class TaskManager extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
         useMaterial3: true,
       ),
-      // 👇 THIS IS THE FIX: Set the home to WelcomeScreen
       home: const WelcomeScreen(), 
     );
   }
