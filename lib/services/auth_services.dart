@@ -7,11 +7,14 @@ class AuthService {
   Future<User?> signUp(String email, String password) async {
     try {
       UserCredential result = await _auth.createUserWithEmailAndPassword(
-          email: email, password: password);
+        email: email,
+        password: password,
+      );
       return result.user;
+    } on FirebaseAuthException catch (e) {
+      throw Exception(e.message ?? 'Signup failed.');
     } catch (e) {
-      print("Sign Up Error: $e");
-      return null;
+      throw Exception('Signup failed. ${e.toString()}');
     }
   }
 
@@ -19,11 +22,14 @@ class AuthService {
   Future<User?> login(String email, String password) async {
     try {
       UserCredential result = await _auth.signInWithEmailAndPassword(
-          email: email, password: password);
+        email: email,
+        password: password,
+      );
       return result.user;
+    } on FirebaseAuthException catch (e) {
+      throw Exception(e.message ?? 'Login failed.');
     } catch (e) {
-      print("Login Error: $e");
-      return null;
+      throw Exception('Login failed. ${e.toString()}');
     }
   }
 

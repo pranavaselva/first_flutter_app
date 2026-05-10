@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import '../services/auth_services.dart';
 
 class ResponsiveHome extends StatefulWidget {
   const ResponsiveHome({super.key});
@@ -121,11 +123,35 @@ class _ResponsiveHomeState extends State<ResponsiveHome> {
     double screenWidth = MediaQuery.of(context).size.width;
     bool isTablet = screenWidth > 600;
 
+    final userEmail =
+        FirebaseAuth.instance.currentUser?.email ?? 'Unknown user';
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("TaskEase Dashboard"),
         backgroundColor: Colors.deepPurple,
         foregroundColor: Colors.white,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: Center(
+              child: Text(userEmail, style: const TextStyle(fontSize: 14)),
+            ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.logout),
+            tooltip: 'Logout',
+            onPressed: () async {
+              final messenger = ScaffoldMessenger.of(context);
+              await AuthService().signOut();
+              if (mounted) {
+                messenger.showSnackBar(
+                  const SnackBar(content: Text('Logged out successfully.')),
+                );
+              }
+            },
+          ),
+        ],
       ),
       // --- 2. FLOATING ACTION BUTTON ---
       floatingActionButton: FloatingActionButton(
@@ -139,8 +165,9 @@ class _ResponsiveHomeState extends State<ResponsiveHome> {
             .orderBy('createdAt', descending: true)
             .snapshots(),
         builder: (context, snapshot) {
-          if (snapshot.hasError)
+          if (snapshot.hasError) {
             return const Center(child: Text("Connection Error"));
+          }
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
@@ -230,8 +257,8 @@ class _ResponsiveHomeState extends State<ResponsiveHome> {
 
         return Card(
           color: isDone
-              ? Colors.green.withOpacity(0.1)
-              : Colors.deepPurple.withOpacity(0.05),
+              ? Colors.green.withAlpha(26)
+              : Colors.deepPurple.withAlpha(13),
           child: Center(
             child: ListTile(
               onTap: () =>
